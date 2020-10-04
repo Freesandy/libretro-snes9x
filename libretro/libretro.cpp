@@ -60,6 +60,7 @@ bool g_geometry_update = false;
 
 int hires_blend = 0;
 bool randomize_memory = false;
+int disabled_channels = 0;
 
 char retro_system_directory[4096];
 char retro_save_directory[4096];
@@ -70,6 +71,8 @@ static retro_audio_sample_t audio_cb = NULL;
 static retro_audio_sample_batch_t audio_batch_cb = NULL;
 static retro_input_poll_t poll_cb = NULL;
 static retro_input_state_t input_state_cb = NULL;
+
+static bool libretro_supports_bitmasks = false;
 
 static snes_ntsc_t *snes_ntsc = NULL;
 static int blargg_filter = 0;
@@ -336,7 +339,6 @@ static void update_variables(void)
     else
         Settings.UpAndDown = false;
 
-    int disabled_channels=0;
     strcpy(key, "snes9x_sndchan_x");
     var.key=key;
     for (int i=0;i<8;i++)
@@ -1150,6 +1152,12 @@ bool retro_load_game(const struct retro_game_info *game)
             for(int lcv = 0; lcv < 0x20000; lcv++)
                 Memory.RAM[lcv] = rand() % 256;
         }
+        
+        // restore disabled sound channels
+        if (disabled_channels)
+        {
+            S9xSetSoundControl(disabled_channels^0xFF);
+        }
     }
 
     if (!rom_loaded && log_cb)
@@ -1385,6 +1393,9 @@ void retro_init(void)
     S9xUnmapAllControls();
     map_buttons();
     check_system_specs();
+
+    if (environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL))
+        libretro_supports_bitmasks = true;
 }
 
 #define MAP_BUTTON(id, name) S9xMapButton((id), S9xGetCommandT((name)), false)
@@ -1683,20 +1694,41 @@ static void report_buttons()
 {
     int offset = snes_devices[0] == RETRO_DEVICE_JOYPAD_MULTITAP ? 4 : 1;
     int _x, _y;
+    int16_t joy_bits;
 
     for (int port = 0; port <= 1; port++)
     {
         switch (snes_devices[port])
         {
             case RETRO_DEVICE_JOYPAD:
+                if (libretro_supports_bitmasks)
+                    joy_bits = input_state_cb(port * offset, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+                else
+                {
+                    joy_bits = 0;
+                    for (int i = 0; i < (RETRO_DEVICE_ID_JOYPAD_R3+1); i++)
+                        joy_bits |= input_state_cb(port * offset, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+                }
+
                 for (int i = BTN_FIRST; i <= BTN_LAST; i++)
-                    S9xReportButton(MAKE_BUTTON(port * offset + 1, i), input_state_cb(port * offset, RETRO_DEVICE_JOYPAD, 0, i));
+                    S9xReportButton(MAKE_BUTTON(port * offset + 1, i), joy_bits & (1 << i));
                 break;
 
             case RETRO_DEVICE_JOYPAD_MULTITAP:
                 for (int j = 0; j < 4; j++)
+                {
+                    if (libretro_supports_bitmasks)
+                        joy_bits = input_state_cb(port * offset + j, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+                    else
+                    {
+                        joy_bits = 0;
+                        for (int i = 0; i < (RETRO_DEVICE_ID_JOYPAD_R3+1); i++)
+                            joy_bits |= input_state_cb(port * offset + j, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+                    }
+
                     for (int i = BTN_FIRST; i <= BTN_LAST; i++)
-                        S9xReportButton(MAKE_BUTTON(port * offset + j + 1, i), input_state_cb(port * offset + j, RETRO_DEVICE_JOYPAD, 0, i));
+                        S9xReportButton(MAKE_BUTTON(port * offset + j + 1, i), joy_bits & (1 << i));
+                }
                 break;
 
             case RETRO_DEVICE_MOUSE:
@@ -1861,6 +1893,8 @@ void retro_deinit()
 
     free(screen_buffer);
     free(ntsc_screen_buffer);
+
+    libretro_supports_bitmasks = false;
 }
 
 
@@ -1968,6 +2002,12 @@ bool retro_unserialize(const void* data, size_t size)
     if (S9xUnfreezeGameMem((const uint8_t*)data,size) != SUCCESS)
         return false;
 
+    // restore disabled sound channels
+    if (disabled_channels)
+    {
+        S9xSetSoundControl(disabled_channels^0xFF);
+    }
+    
     return true;
 }
 
