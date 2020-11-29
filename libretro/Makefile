@@ -9,6 +9,7 @@ BACKSLASH :=
 BACKSLASH := \$(BACKSLASH)
 filter_out1 = $(filter-out $(firstword $1),$1)
 filter_out2 = $(call filter_out1,$(call filter_out1,$1))
+STATIC_LINKING=0
 
 ifeq ($(platform),)
    platform = unix
@@ -96,12 +97,14 @@ else ifeq ($(platform), osx)
 # Nintendo Switch (libnx)
 else ifeq ($(platform), libnx)
    include $(DEVKITPRO)/libnx/switch_rules
+   PORTLIBS := $(PORTLIBS_PATH)/switch
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
    DEFINES := -DSWITCH=1 -D__SWITCH__ -DARM
-   CFLAGS := $(DEFINES) -fPIE -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -specs=$(LIBNX)/switch.specs
+   CFLAGS := $(DEFINES) -fPIE -I$(PORTLIBS)/include/ -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -specs=$(LIBNX)/switch.specs
    CFLAGS += -march=armv8-a -mtune=cortex-a57 -mtp=soft -mcpu=cortex-a57+crc+fp+simd -ffast-math
    CXXFLAGS := $(ASFLAGS) $(CFLAGS)
-   STATIC_LINKING = 1
+   STATIC_LINKING=1
+   STATIC_LINKING_LINK=1
 
 # Classic Platforms ####################
 # Platform affix = classic_<ISA>_<µARCH>
@@ -239,22 +242,23 @@ else ifeq ($(platform), qnx)
 
 # Vita
 else ifeq ($(platform), vita)
-   CFLAGS += $(LTO)
-   CXXFLAGS += $(LTO)
-   LDFLAGS += $(LTO)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).so
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
    fpic := -fPIC
    CC = arm-vita-eabi-gcc$(EXE_EXT)
    CXX = arm-vita-eabi-g++$(EXE_EXT)
    AR = arm-vita-eabi-ar$(EXE_EXT)
    CXXFLAGS += -DVITA
    HAVE_EXCEPTIONS = 1
+   STATIC_LINKING=1
+   STATIC_LINKING_LINK=1
+   LTO =
 
 # PS3
 else ifneq (,$(filter $(platform), ps3 sncps3 psl1ght))
    TARGET := $(TARGET_NAME)_libretro_$(platform).a
    CXXFLAGS += -DBLARGG_BIG_ENDIAN=1 -D__ppc__
-   STATIC_LINKING = 1
+   STATIC_LINKING=1
+   STATIC_LINKING_LINK=1
    HAVE_STRINGS_H = 0
 
    # sncps3
@@ -287,7 +291,8 @@ else ifeq ($(platform), xenon)
    CXX = xenon-g++$(EXE_EXT)
    AR = xenon-ar$(EXE_EXT)
    CXXFLAGS += -D__LIBXENON__ -m32 -D__ppc__
-   STATIC_LINKING = 1
+   STATIC_LINKING=1
+   STATIC_LINKING_LINK=1
 
 # Nintendo Game Cube / Wii / WiiU
 else ifneq (,$(filter $(platform), ngc wii wiiu))
@@ -297,7 +302,8 @@ else ifneq (,$(filter $(platform), ngc wii wiiu))
    AR = $(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT)
    CXXFLAGS += -mcpu=750 -meabi -mhard-float -DBLARGG_BIG_ENDIAN=1 -D__ppc__
    CXXFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
-   STATIC_LINKING = 1
+   STATIC_LINKING=1
+   STATIC_LINKING_LINK=1
 
    # Nintendo WiiU
    ifneq (,$(findstring wiiu,$(platform)))
@@ -315,7 +321,8 @@ else ifneq (,$(filter $(platform), ngc wii wiiu))
 # Emscripten
 else ifeq ($(platform), emscripten)
    TARGET := $(TARGET_NAME)_libretro_$(platform).bc
-   STATIC_LINKING = 1
+   STATIC_LINKING=1
+   STATIC_LINKING_LINK=1
 
 # Windows MSVC 2003 Xbox 1
 else ifeq ($(platform), xbox1_msvc2003)
@@ -333,6 +340,7 @@ PSS_STYLE :=2
 CFLAGS   += -D_XBOX -D_XBOX1
 CXXFLAGS += -D_XBOX -D_XBOX1
 STATIC_LINKING=1
+STATIC_LINKING_LINK=1
 HAS_GCC := 0
 # Windows MSVC 2010 Xbox 360
 else ifeq ($(platform), xbox360_msvc2010)
@@ -350,6 +358,7 @@ PSS_STYLE :=2
 CFLAGS   += -D_XBOX -D_XBOX360
 CXXFLAGS += -D_XBOX -D_XBOX360
 STATIC_LINKING=1
+STATIC_LINKING_LINK=1
 HAS_GCC := 0
 
 # Windows MSVC 2017 all architectures
@@ -640,6 +649,8 @@ else
 	LD = link.exe
 endif
 else
+	OBJOUT   = -o
+	LINKOUT  = -o
 	LD = $(CXX)
 endif
 
@@ -655,10 +666,10 @@ else
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-ifeq ($(STATIC_LINKING), 1)
+ifeq ($(STATIC_LINKING_LINK),1)
 	$(AR) rcs $@ $(OBJECTS)
 else
-	+$(LD) $(fpic) $(SHARED) $(LINKOUT)$@ $(OBJECTS) $(LDFLAGS) $(LIBS)
+	$(LD) $(fpic) $(SHARED) $(LINKOUT)$@ $(OBJECTS) $(LDFLAGS) $(LIBS)
 endif
 
 %.o: %.cpp 
