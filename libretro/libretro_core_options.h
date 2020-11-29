@@ -56,9 +56,9 @@ struct retro_core_option_definition option_defs_us[] = {
 
    {
       "snes9x_region",
-      "系统制式（需要重启）",
-      "指定系统制式。'PAL'制是50hz，'NTSC'制是60hz。\n"
-      "如果选择了不正确的制式，游戏可能会运行偏快或者偏慢。",
+      "系统制式 (需要重启) ",
+      "指定系统制式. 'PAL'制是50hz, 'NTSC'制是60hz. \n"
+      "如果选择了不正确的制式, 游戏可能会运行偏快或者偏慢. ",
       {
          { "auto", "自动" },
          { "ntsc", "NTSC" },
@@ -70,8 +70,8 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_aspect",
       "显示宽高比",
-      "选择期望的显示宽高比。\n"
-      "此项设置只有当RetroArch的宽高比设为‘内核提供’时有效。",
+      "选择期望的显示宽高比. \n"
+      "此项设置只有当RetroArch的宽高比设为'内核提供'时有效. ",
       {
          { "4:3",         NULL },
          { "uncorrected", "未修正的" },
@@ -85,8 +85,8 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_overscan",
       "切除过扫描区域",
-      "移除屏幕上下边缘的大约8个像素，这些像素通常并未被游戏使用，在标准电视上被边框隐藏了。\n"
-      "'自动'表示根据当前游戏自动检测和切除过扫描区域。",
+      "移除屏幕上下边缘的大约8个像素, 这些像素通常并未被游戏使用, 在标准电视上被边框隐藏了. \n"
+      "'自动'表示根据当前游戏自动检测和切除过扫描区域. ",
       {
          { "enabled",  "启用" },
          { "disabled", "禁用" },
@@ -98,7 +98,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_gfx_hires",
       "启用高分辨率模式",
-      "允许游戏切换到高分比率模式（512x448）或者强制所有游戏以256x224输出（会有破损像素）。",
+      "允许游戏切换到高分比率模式 (512x448) 或者强制所有游戏以256x224输出 (会有破损像素) . ",
       {
          { "enabled",  "启用" },
          { "disabled", "禁用" },
@@ -109,8 +109,8 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_hires_blend",
       "高分辨率混合",
-      "当游戏切换到高分辨率模式时（512x448），混合相邻像素。\n"
-      "某些有些需要此方法产生透明效果（例如Kirby's Dream Land, Jurassic Park...）",
+      "当游戏切换到高分辨率模式时 (512x448) , 混合相邻像素. \n"
+      "某些有些需要此方法产生透明效果 (例如Kirby's Dream Land, Jurassic Park...) ",
       {
          { "disabled", "禁用" },
          { "merge",    "融合" },
@@ -122,7 +122,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_blargg",
       "Blargg NTSC滤镜",
-      "使用一个视频滤镜来模拟不同的NTSC TV信号。",
+      "使用一个视频滤镜来模拟不同的NTSC TV信号. ",
       {
          { "disabled",   "禁用" },
          { "monochrome", "单色" },
@@ -137,8 +137,8 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_audio_interpolation",
       "音频插值",
-      "使用音频滤镜。'Gaussian'产生比原始硬件加强的低音效果。\n"
-	  "'Cubic'和'Sinc'精确度较低，但是保留更多高频。",
+      "使用音频滤镜. 'Gaussian'产生比原始硬件加强的低音效果. \n"
+	  "'Cubic'和'Sinc'精确度较低, 但是保留更多高频. ",
       {
          { "gaussian", "Gaussian" },
          { "cubic",    "Cubic" },
@@ -152,8 +152,8 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_up_down_allowed",
       "允许同时按下相反方向键",
-      "启用此项允许同时按下/快速切换/按住左右或者上下方向键。\n"
-      "这可能会引起移动问题。",
+      "启用此项允许同时按下/快速切换/按住左右或者上下方向键. \n"
+      "这可能会引起移动问题. ",
       {
          { "disabled", "禁用" },
          { "enabled",  "启用" },
@@ -164,8 +164,8 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_overclock_superfx",
       "SuperFX超频",
-      "SuperFX协处理器倍频。可以提高帧率也可能引起时序错误。\n"
-      "低于100%的值可以提高在低端设备上的游戏性能。",
+      "SuperFX协处理器倍频. 可以提高帧率也可能引起时序错误. \n"
+      "低于100%的值可以提高在低端设备上的游戏性能. ",
       {
          { "50%",  NULL },
          { "60%",  NULL },
@@ -187,11 +187,11 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "snes9x_overclock_cycles",
-      "减少拖慢（Hack，不安全）",
-      "超频SNES的CPU。可能导致游戏崩溃！\n"
-      "'轻度'可以缩短游戏载入时间。\n"
-      "'兼容方式'可以解决绝大部分游戏的拖慢。\n"
-      "'最大'只针对某些绝对需要的游戏（例如Gradius 3, Super R-type...）",
+      "减少拖慢 (Hack, 不安全) ",
+      "超频SNES的CPU. 可能导致游戏崩溃！\n"
+      "'轻度'可以缩短游戏载入时间. \n"
+      "'兼容方式'可以解决绝大部分游戏的拖慢. \n"
+      "'最大'只针对某些绝对需要的游戏 (例如Gradius 3, Super R-type...) ",
       {
          { "disabled",   "禁用" },
          { "light",      "轻度" },
@@ -203,8 +203,8 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "snes9x_reduce_sprite_flicker",
-      "减少闪烁（Hack，不安全）",
-      "增加屏幕上可以同时绘制的活动块数量。",
+      "减少闪烁 (Hack, 不安全) ",
+      "增加屏幕上可以同时绘制的活动块数量. ",
       {
          { "disabled", "禁用" },
          { "enabled",  "启用" },
@@ -214,11 +214,11 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "snes9x_randomize_memory",
-      "随机内存初始值（不安全）",
-      "启动时随机化内存值。\n"
+      "随机内存初始值 (不安全) ",
+      "启动时随机化内存值. \n"
       "有些游戏例如'Super Off Road'使用系统内存\n"
-      "作为随机数生成器来随机化物品放置或者AI行为，\n"
-      "以使游戏更加难以预测。",
+      "作为随机数生成器来随机化物品放置或者AI行为, \n"
+      "以使游戏更加难以预测. ",
       {
          { "disabled", "禁用" },
          { "enabled",  "启用" },
@@ -229,7 +229,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_block_invalid_vram_access",
       "阻止无效的VRAM访问",
-      "有些自制程序/修改版ROM需要禁用此项才能正确运行。",
+      "有些自制程序/修改版ROM需要禁用此项才能正确运行. ",
       {
          { "enabled",  "启用" },
          { "disabled", "禁用" },
@@ -239,8 +239,8 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "snes9x_echo_buffer_hack",
-      "回声缓存Hack（不安全，只对旧式添加音乐修改版ROM启用）",
-      "有些自制程序/修改版ROM需要启用此项才能正确运行。",
+      "回声缓存Hack (不安全, 只对旧式添加音乐修改版ROM启用) ",
+      "有些自制程序/修改版ROM需要启用此项才能正确运行. ",
       {
          { "disabled", "禁用" },
          { "enabled",  "启用" },
@@ -251,8 +251,8 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_show_lightgun_settings",
       "显示光枪设置",
-      "启用对Super Scope / Justifier / M.A.C.S.步枪输入设备的设置选项。\n"
-      "注意：必须重新切换快速菜单以生效。",
+      "启用对Super Scope / Justifier / M.A.C.S.步枪输入设备的设置选项. \n"
+      "注意：必须重新切换快速菜单以生效. ",
       {
          { "enabled",  "启用" },
          { "disabled", "禁用" },
@@ -263,7 +263,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_lightgun_mode",
       "光枪模式",
-      "使用鼠标控制的‘光枪’或者使用触屏输入。",
+      "使用鼠标控制的‘光枪’或者使用触屏输入. ",
       {
          { "Lightgun",    "光枪" },
          { "Touchscreen", "触屏" },
@@ -274,7 +274,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_superscope_reverse_buttons",
       "交换Super Scope的扳机按钮",
-      "交换Super Scope的‘开火’键和‘光标’键的位置。",
+      "交换Super Scope的‘开火’键和‘光标’键的位置. ",
       {
          { "disabled", "禁用" },
          { "enabled",  "启用" },
@@ -285,7 +285,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_superscope_crosshair",
       "Super Scope准心大小",
-      "改变屏幕上的准心大小。",
+      "改变屏幕上的准心大小. ",
       {
          { "0",  NULL },
          { "1",  NULL },
@@ -311,38 +311,38 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_superscope_color",
       "Super Scope准心颜色",
-      "改变屏幕上的准心颜色。",
+      "改变屏幕上的准心颜色. ",
       {
          { "White",            "白色" },
-         { "White (blend)",    "白色（混合）" },
+         { "White (blend)",    "白色 (混合) " },
          { "Red",              "红色" },
-         { "Red (blend)",      "红色（混合）" },
+         { "Red (blend)",      "红色 (混合) " },
          { "Orange",           "橙色" },
-         { "Orange (blend)",   "橙色（混合）" },
+         { "Orange (blend)",   "橙色 (混合) " },
          { "Yellow",           "黄色" },
-         { "Yellow (blend)",   "黄色（混合）" },
+         { "Yellow (blend)",   "黄色 (混合) " },
          { "Green",            "绿色" },
-         { "Green (blend)",    "绿色（混合）" },
+         { "Green (blend)",    "绿色 (混合) " },
          { "Cyan",             "青色" },
-         { "Cyan (blend)",     "青色（混合）" },
+         { "Cyan (blend)",     "青色 (混合) " },
          { "Sky",              "天蓝色" },
-         { "Sky (blend)",      "天蓝色（混合）" },
+         { "Sky (blend)",      "天蓝色 (混合) " },
          { "Blue",             "蓝色" },
-         { "Blue (blend)",     "蓝色（混合）" },
+         { "Blue (blend)",     "蓝色 (混合) " },
          { "Violet",           "蓝紫色" },
-         { "Violet (blend)",   "蓝紫色（混合）" },
+         { "Violet (blend)",   "蓝紫色 (混合) " },
          { "Pink",             "粉红色" },
-         { "Pink (blend)",     "粉红色（混合）" },
+         { "Pink (blend)",     "粉红色 (混合) " },
          { "Purple",           "紫红色" },
-         { "Purple (blend)",   "紫红色（混合）" },
+         { "Purple (blend)",   "紫红色 (混合) " },
          { "Black",            "黑色" },
-         { "Black (blend)",    "黑色（混合）" },
+         { "Black (blend)",    "黑色 (混合) " },
          { "25% Grey",         "25%灰度" },
-         { "25% Grey (blend)", "25%灰度（混合）" },
+         { "25% Grey (blend)", "25%灰度 (混合) " },
          { "50% Grey",         "50%灰度" },
-         { "50% Grey (blend)", "50%灰度（混合）" },
+         { "50% Grey (blend)", "50%灰度 (混合) " },
          { "75% Grey",         "75%灰度" },
-         { "75% Grey (blend)", "75%灰度（混合）" },
+         { "75% Grey (blend)", "75%灰度 (混合) " },
          { NULL, NULL},
       },
       "White"
@@ -350,7 +350,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_justifier1_crosshair",
       "Justifier 1准心大小",
-      "改变屏幕上的准心大小。",
+      "改变屏幕上的准心大小. ",
       {
          { "0",  NULL },
          { "1",  NULL },
@@ -376,38 +376,38 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_justifier1_color",
       "Justifier 1准心颜色",
-      "改变屏幕上的准心颜色。",
+      "改变屏幕上的准心颜色. ",
       {
          { "Blue",             "蓝色" },
-         { "Blue (blend)",     "蓝色（混合）" },
+         { "Blue (blend)",     "蓝色 (混合) " },
          { "Violet",           "蓝紫色" },
-         { "Violet (blend)",   "蓝紫色（混合）" },
+         { "Violet (blend)",   "蓝紫色 (混合) " },
          { "Pink",             "粉红色" },
-         { "Pink (blend)",     "粉红色（混合）" },
+         { "Pink (blend)",     "粉红色 (混合) " },
          { "Purple",           "紫红色" },
-         { "Purple (blend)",   "紫红色（混合）" },
+         { "Purple (blend)",   "紫红色 (混合) " },
          { "Black",            "黑色" },
-         { "Black (blend)",    "黑色（混合）" },
+         { "Black (blend)",    "黑色 (混合) " },
          { "25% Grey",         "25%灰度" },
-         { "25% Grey (blend)", "25%灰度（混合）" },
+         { "25% Grey (blend)", "25%灰度 (混合) " },
          { "50% Grey",         "50%灰度" },
-         { "50% Grey (blend)", "50%灰度（混合）" },
+         { "50% Grey (blend)", "50%灰度 (混合) " },
          { "75% Grey",         "75%灰度" },
-         { "75% Grey (blend)", "75%灰度（混合）" },
+         { "75% Grey (blend)", "75%灰度 (混合) " },
          { "White",            "白色" },
-         { "White (blend)",    "白色（混合）" },
+         { "White (blend)",    "白色 (混合) " },
          { "Red",              "红色" },
-         { "Red (blend)",      "红色（混合）" },
+         { "Red (blend)",      "红色 (混合) " },
          { "Orange",           "橙色" },
-         { "Orange (blend)",   "橙色（混合）" },
+         { "Orange (blend)",   "橙色 (混合) " },
          { "Yellow",           "黄色" },
-         { "Yellow (blend)",   "黄色（混合）" },
+         { "Yellow (blend)",   "黄色 (混合) " },
          { "Green",            "绿色" },
-         { "Green (blend)",    "绿色（混合）" },
+         { "Green (blend)",    "绿色 (混合) " },
          { "Cyan",             "青色" },
-         { "Cyan (blend)",     "青色（混合）" },
+         { "Cyan (blend)",     "青色 (混合) " },
          { "Sky",              "天蓝色" },
-         { "Sky (blend)",      "天蓝色（混合）" },
+         { "Sky (blend)",      "天蓝色 (混合) " },
          { NULL, NULL},
       },
       "Blue"
@@ -415,7 +415,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_justifier2_crosshair",
       "Justifier 2准心大小",
-      "改变屏幕上的准心大小。",
+      "改变屏幕上的准心大小. ",
       {
          { "0",  NULL },
          { "1",  NULL },
@@ -441,38 +441,38 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_justifier2_color",
       "Justifier 2准心颜色",
-      "改变屏幕上的准心颜色。",
+      "改变屏幕上的准心颜色. ",
       {
          { "Pink",             "粉红色" },
-         { "Pink (blend)",     "粉红色（混合）" },
+         { "Pink (blend)",     "粉红色 (混合) " },
          { "Purple",           "紫红色" },
-         { "Purple (blend)",   "紫红色（混合）" },
+         { "Purple (blend)",   "紫红色 (混合) " },
          { "Black",            "黑色" },
-         { "Black (blend)",    "黑色（混合）" },
+         { "Black (blend)",    "黑色 (混合) " },
          { "25% Grey",         "25%灰度" },
-         { "25% Grey (blend)", "25%灰度（混合）" },
+         { "25% Grey (blend)", "25%灰度 (混合) " },
          { "50% Grey",         "50%灰度" },
-         { "50% Grey (blend)", "50%灰度（混合）" },
+         { "50% Grey (blend)", "50%灰度 (混合) " },
          { "75% Grey",         "75%灰度" },
-         { "75% Grey (blend)", "75%灰度（混合）" },
+         { "75% Grey (blend)", "75%灰度 (混合) " },
          { "White",            "白色" },
-         { "White (blend)",    "白色（混合）" },
+         { "White (blend)",    "白色 (混合) " },
          { "Red",              "红色" },
-         { "Red (blend)",      "红色（混合）" },
+         { "Red (blend)",      "红色 (混合) " },
          { "Orange",           "橙色" },
-         { "Orange (blend)",   "橙色（混合）" },
+         { "Orange (blend)",   "橙色 (混合) " },
          { "Yellow",           "黄色" },
-         { "Yellow (blend)",   "黄色（混合）" },
+         { "Yellow (blend)",   "黄色 (混合) " },
          { "Green",            "绿色" },
-         { "Green (blend)",    "绿色（混合）" },
+         { "Green (blend)",    "绿色 (混合) " },
          { "Cyan",             "青色" },
-         { "Cyan (blend)",     "青色（混合）" },
+         { "Cyan (blend)",     "青色 (混合) " },
          { "Sky",              "天蓝色" },
-         { "Sky (blend)",      "天蓝色（混合）" },
+         { "Sky (blend)",      "天蓝色 (混合) " },
          { "Blue",             "蓝色" },
-         { "Blue (blend)",     "蓝色（混合）" },
+         { "Blue (blend)",     "蓝色 (混合) " },
          { "Violet",           "蓝紫色" },
-         { "Violet (blend)",   "蓝紫色（混合）" },
+         { "Violet (blend)",   "蓝紫色 (混合) " },
          { NULL, NULL},
       },
       "Pink"
@@ -480,7 +480,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_rifle_crosshair",
       "M.A.C.S.步枪准心大小",
-      "改变屏幕上的准心大小。",
+      "改变屏幕上的准心大小. ",
       {
          { "0",  NULL },
          { "1",  NULL },
@@ -506,38 +506,38 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_rifle_color",
       "M.A.C.S.步枪准心颜色",
-      "改变屏幕上的准心颜色。",
+      "改变屏幕上的准心颜色. ",
       {
          { "White",            "白色" },
-         { "White (blend)",    "白色（混合）" },
+         { "White (blend)",    "白色 (混合) " },
          { "Red",              "红色" },
-         { "Red (blend)",      "红色（混合）" },
+         { "Red (blend)",      "红色 (混合) " },
          { "Orange",           "橙色" },
-         { "Orange (blend)",   "橙色（混合）" },
+         { "Orange (blend)",   "橙色 (混合) " },
          { "Yellow",           "黄色" },
-         { "Yellow (blend)",   "黄色（混合）" },
+         { "Yellow (blend)",   "黄色 (混合) " },
          { "Green",            "绿色" },
-         { "Green (blend)",    "绿色（混合）" },
+         { "Green (blend)",    "绿色 (混合) " },
          { "Cyan",             "青色" },
-         { "Cyan (blend)",     "青色（混合）" },
+         { "Cyan (blend)",     "青色 (混合) " },
          { "Sky",              "天蓝色" },
-         { "Sky (blend)",      "天蓝色（混合）" },
+         { "Sky (blend)",      "天蓝色 (混合) " },
          { "Blue",             "蓝色" },
-         { "Blue (blend)",     "蓝色（混合）" },
+         { "Blue (blend)",     "蓝色 (混合) " },
          { "Violet",           "蓝紫色" },
-         { "Violet (blend)",   "蓝紫色（混合）" },
+         { "Violet (blend)",   "蓝紫色 (混合) " },
          { "Pink",             "粉红色" },
-         { "Pink (blend)",     "粉红色（混合）" },
+         { "Pink (blend)",     "粉红色 (混合) " },
          { "Purple",           "紫红色" },
-         { "Purple (blend)",   "紫红色（混合）" },
+         { "Purple (blend)",   "紫红色 (混合) " },
          { "Black",            "黑色" },
-         { "Black (blend)",    "黑色（混合）" },
+         { "Black (blend)",    "黑色 (混合) " },
          { "25% Grey",         "25%灰度" },
-         { "25% Grey (blend)", "25%灰度（混合）" },
+         { "25% Grey (blend)", "25%灰度 (混合) " },
          { "50% Grey",         "50%灰度" },
-         { "50% Grey (blend)", "50%灰度（混合）" },
+         { "50% Grey (blend)", "50%灰度 (混合) " },
          { "75% Grey",         "75%灰度" },
-         { "75% Grey (blend)", "75%灰度（混合）" },
+         { "75% Grey (blend)", "75%灰度 (混合) " },
          { NULL, NULL},
       },
       "White"
@@ -545,8 +545,8 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "snes9x_show_advanced_av_settings",
       "显示高级音频/视频设置",
-      "显示图层/GFX特效/音频通道的底层设置。\n"
-      "注意：必须重新切换快速菜单以生效。",
+      "显示图层/GFX特效/音频通道的底层设置. \n"
+      "注意：必须重新切换快速菜单以生效. ",
       {
          { "enabled",  "启用" },
          { "disabled", "禁用" },
