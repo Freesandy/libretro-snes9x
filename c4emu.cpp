@@ -1022,7 +1022,7 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 						printf("$7f4d=%02x, expected 0e for command 54 %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
 					int64 a = (int64)READ_3WORD(Memory.C4RAM + 0x1f80);
-					a |= 0xffffffffff000000 * ((a >> 23) & 1);
+					a |= 0xffffffffff000000LL * ((a >> 23) & 1);
 					//printf("%08X%08X\n", (uint32) (a>>32), (uint32) (a&0xFFFFFFFF));
 					a *= a;
 					//printf("%08X%08X\n", (uint32) (a>>32), (uint32) (a&0xFFFFFFFF));

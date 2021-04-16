@@ -20,6 +20,9 @@ ifeq ($(platform),)
    else ifneq ($(findstring Darwin,$(shell uname -s)),)
       platform = osx
       arch = intel
+      ifeq ($(shell uname -p),arm64)
+         arch = arm
+      endif
       ifeq ($(shell uname -p),powerpc)
          arch = ppc
       endif
@@ -72,6 +75,18 @@ ifneq (,$(findstring unix,$(platform)))
       CXXFLAGS += -DARM
    endif
 
+# ODROIDN2
+else ifneq (,$(findstring CortexA73_G12B,$(platform)))
+	TARGET := $(TARGET_NAME)_libretro.so
+	fpic := -fPIC
+	SHARED := -shared -Wl,-version-script=link.T
+	ARCH = arm64
+	HAVE_NEON = 1
+	BUILTIN_GPU = neon
+	USE_DYNAREC = 1
+	CFLAGS += -fomit-frame-pointer -ffast-math -DARM
+	CPUFLAGS += -march=armv8-a+crc -mfpu=neon-fp-armv8 -mcpu=cortex-a73 -mtune=cortex-a73.cortex-a53
+
 # OS X
 else ifeq ($(platform), osx)
    CFLAGS += $(LTO)
@@ -81,18 +96,47 @@ else ifeq ($(platform), osx)
    fpic := -fPIC
    SHARED := -dynamiclib
    arch = intel
+   ifeq ($(shell uname -p),arm64)
+      arch = arm
+   endif
    ifeq ($(shell uname -p),powerpc)
       arch = ppc
    endif
    ifeq ($(arch),ppc)
       CXXFLAGS += -DBLARGG_BIG_ENDIAN=1 -D__ppc__
    endif
+   MINVERSION =
    OSXVER = $(shell sw_vers -productVersion | cut -d. -f 2)
-   OSX_GT_MOJAVE = $(shell (( $(OSXVER) >= 14)) && echo "YES")
-   ifneq ($(OSX_GT_MOJAVE),YES)
-	#this breaks compiling on Mac OS Mojave
-      fpic += -mmacosx-version-min=10.1
+   OSX_LT_MAVERICKS = `(( $(OSXVER) <= 9)) && echo "YES"`
+   ifeq ($(OSX_LT_MAVERICKS),YES)
+   	   MINVERSION = -mmacosx-version-min=10.1
    endif
+
+   ifeq ($(CROSS_COMPILE),1)
+		TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
+		CFLAGS   += $(TARGET_RULE)
+		CPPFLAGS += $(TARGET_RULE)
+		CXXFLAGS += $(TARGET_RULE)
+		LDFLAGS  += $(TARGET_RULE)
+		MINVERSION =
+   endif
+
+   fpic += $(MINVERSION)
+
+# CTR (3DS)
+else ifeq ($(platform), ctr)
+	EXT=a
+	TARGET := $(TARGET_NAME)_libretro_$(platform).$(EXT)
+	CC = $(DEVKITARM)/bin/arm-none-eabi-gcc$(EXE_EXT)
+	CXX= $(DEVKITARM)/bin/arm-none-eabi-g++$(EXE_EXT)
+	AR = $(DEVKITARM)/bin/arm-none-eabi-ar$(EXE_EXT)
+	CFLAGS += -DARM11 -D_3DS
+	CFLAGS += -march=armv6k -mtune=mpcore -mfloat-abi=hard
+	CFLAGS += -Wall -mword-relocations
+	CFLAGS += -fomit-frame-pointer -ffast-math
+	CXXFLAGS := -DARM11 -D_3DS -march=armv6k -mtune=mpcore -mfloat-abi=hard -Wall -mword-relocations -fomit-frame-pointer -ffast-math
+	STATIC_LINKING=1
+	STATIC_LINKING_LINK=1
 
 # Nintendo Switch (libnx)
 else ifeq ($(platform), libnx)
@@ -177,29 +221,26 @@ else ifneq (,$(findstring ios,$(platform)))
    TARGET := $(TARGET_NAME)_libretro_ios.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
+   MINVERSION :=
    ifeq ($(IOSSDK),)
       IOSSDK := $(shell xcodebuild -version -sdk iphoneos Path)
    endif
    ifeq ($(platform),ios-arm64)
-		CC = clang -arch arm64 -isysroot $(IOSSDK)
-		CXX = clang++ -arch arm64 -isysroot $(IOSSDK)
+	CC = cc -arch arm64 -isysroot $(IOSSDK)
+        CXX = c++ -arch arm64 -isysroot $(IOSSDK)
    else
-		CC = clang -arch armv7 -isysroot $(IOSSDK)
-		CXX = clang++ -arch armv7 -isysroot $(IOSSDK)
+	CC = cc -arch armv7 -isysroot $(IOSSDK)
+        CXX = c++ -arch armv7 -isysroot $(IOSSDK)
    endif
    CXXFLAGS += -DIOS
    CXXFLAGS += -DARM
    ifeq ($(platform),$(filter $(platform),ios9 ios-arm64))
-      CC       += -miphoneos-version-min=8.0
-      CXX      += -miphoneos-version-min=8.0
-      CFLAGS   += -miphoneos-version-min=8.0
-      CXXFLAGS += -miphoneos-version-min=8.0
+      MINVERSION = -miphoneos-version-min=8.0
    else
-      CC       += -miphoneos-version-min=5.0
-      CXX      += -miphoneos-version-min=5.0
-      CFLAGS   += -miphoneos-version-min=5.0
-      CXXFLAGS += -miphoneos-version-min=5.0
+      MINVERSION = -miphoneos-version-min=5.0
    endif
+   CFLAGS   += $(MINVERSION)
+   CXXFLAGS += $(MINVERSION)
 
 #tvOS
 else ifeq ($(platform), tvos-arm64)
@@ -214,6 +255,8 @@ else ifeq ($(platform), tvos-arm64)
    endif
    CXXFLAGS += -DIOS
    CXXFLAGS += -DARM
+   CC = cc -arch arm64 -isysroot $(IOSSDK)
+   CXX = c++ -arch arm64 -isysroot $(IOSSDK)
 
 # Theos
 else ifeq ($(platform), theos_ios)
@@ -304,9 +347,9 @@ else ifneq (,$(filter $(platform), ngc wii wiiu))
    CXXFLAGS += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
    STATIC_LINKING=1
    STATIC_LINKING_LINK=1
-
-   # Nintendo WiiU
-   ifneq (,$(findstring wiiu,$(platform)))
+   
+   # Nintendo WiiU	
+   ifneq (,$(findstring wiiu,$(platform)))	
       CXXFLAGS += -mwup
 
    # Nintendo Wii

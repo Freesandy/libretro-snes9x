@@ -16,6 +16,10 @@
 #endif
 #include <cmath>
 
+#ifdef __CELLOS_LV2__
+using namespace std;
+#endif
+
 class Resampler
 {
   public:
